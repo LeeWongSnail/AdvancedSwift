@@ -6,7 +6,7 @@
 ## Swift
 
 ### swift 富有表现力
-
+[swift表现力](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/Swift%20%E8%A1%A8%E7%8E%B0%E5%8A%9B.md)
 ### Swift 安全性
 
 [安全性](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/Swift%20%E5%AE%89%E5%85%A8%E6%80%A7.md)
