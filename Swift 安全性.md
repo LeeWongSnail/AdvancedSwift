@@ -16,8 +16,25 @@
 
 访问控制有点复杂这里我们单独写一篇文章来描述
 
-[访问控制详解](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/Swift-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6.md)
+[访问控制](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/Swift-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6.md)
+
+#### 强制异常处理
+
+方法需要抛出异常时，需要申明为throw方法。当调用可能会throw异常的方法，`需要强制捕获异常避免将异常暴露到上层`
+
+#### 模式匹配
+
+通过模式匹配检测Switch中未处理的case
+
+![](https://tva1.sinaimg.cn/large/008vxvgGgy1h7feznzfdjj310605tjrr.jpg)
+
+### 类型安全
+
+#### 强制类型转换
+
+禁止隐式类型转换，避免转换中带来的异常问题。同时类型转换不会带来额外的运行时消耗。
+
+这样就可以避免我们在OC中，经常遇到因为类型不匹配导致的找不到方法crash
+
 
 	
-
-
