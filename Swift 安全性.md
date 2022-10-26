@@ -38,7 +38,9 @@
 
 #### keyPath
 
-KeyPath相比使用字符串可以提供属性名和类型信息，可以利用编译器检查。	
+KeyPath相比使用字符串可以提供属性名和类型信息，可以利用编译器检查。
+
+keyPath更详细的介绍请看[这里](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/KeyPath.md)	
 #### 泛型
 
 提供泛型和协议关联类型，可以编写出类型安全的代码。相比Any可以更多利用编译时检查发现类型问题。
