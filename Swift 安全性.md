@@ -43,6 +43,9 @@ KeyPath相比使用字符串可以提供属性名和类型信息，可以利用�
 
 提供泛型和协议关联类型，可以编写出类型安全的代码。相比Any可以更多利用编译时检查发现类型问题。
 
+我们这里也用一个单独的篇幅来了解[泛型](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/%E6%B3%9B%E5%9E%8B.md)
+
 #### Enum关联类型
 
 通过给特定枚举指定类型避免使用Any
+
