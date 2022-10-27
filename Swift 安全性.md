@@ -56,6 +56,8 @@ keyPath更详细的介绍请看[这里](https://github.com/LeeWongSnail/Advanced
 
 通过给特定枚举指定类型避免使用Any
 
+更多关于enum的知识点请看[这里](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/Swift%20Enum.md)
+
 
 ### 内存安全
 
