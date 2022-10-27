@@ -63,7 +63,7 @@ keyPath更详细的介绍请看[这里](https://github.com/LeeWongSnail/Advanced
 
 #### 空安全 
 
-通过标识可选值避免空指针带来的异常问题，这里引入的是可选型，这是在OC中所没有的，简单一点来说可选型即可能为空的。
+通过标识可选值避免空指针带来的异常问题，这里引入的是[可选型](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/%E5%8F%AF%E9%80%89%E5%9E%8B%20Optional.md)，这是在OC中所没有的，简单一点来说可选型即可能为空的。
 
 #### ARC
 
