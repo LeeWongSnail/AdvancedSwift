@@ -101,6 +101,6 @@ private lazy var tiger: Tiger = {
 
 #### 内存独占访问
 
-通过编译器检查发现潜在的内存冲突问题
+swift的安全性这里也单独写了篇文章来描述[内存安全](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/%E5%9F%BA%E7%A1%80/%E5%86%85%E5%AD%98%E5%AE%89%E5%85%A8.md)
 
 
