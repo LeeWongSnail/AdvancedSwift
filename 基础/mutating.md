@@ -38,7 +38,7 @@ mutating func changeName(newName: String) {
 
 那么如果对于引用类型呢？编译器提示`mutating is not valid on instance methods in class`,因为对于引用类型(class)来说,本身就是可以在内部修改自身属性的，所以不需要增加mutating关键词。
 
-![mutatingininstancemethod]()
+![mutatingininstancemethod](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/res/941667403487_.pic.jpg?raw=true)
 
 
 因此mutating，经常用在某些即可能在类中又可能在结构体中实现的方法，一般是协议中定义的方法。如下
