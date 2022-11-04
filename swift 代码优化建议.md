@@ -291,7 +291,759 @@ model.data = Object()
 `提示`：计算属性因为每次都会重复计算，所以计算过程需要`轻量`避免带来性能问题。
 
 
+### 控制流
 
+#### 使用`filter/reduce/map`代替`for`循环
+
+使用`filter/reduce/map`可以带来很多好处，包括`更少的局部变量`，`减少模板代码`，代码更加`清晰`，`可读性更高`。
+
+不推荐
+
+```swift
+let nums = [1, 2, 3]
+var result = []
+for num in nums {
+    if num < 3 {
+        result.append(String(num))
+    }
+}
+// result = ["1", "2"]
+```
+
+推荐
+
+```swift
+let nums = [1, 2, 3]
+let result = nums.filter { $0 < 3 }.map { String($0) }
+// result = ["1", "2"]
+```
+
+#### 使用guard进行提前返回
+
+推荐
+
+```swift
+guard !a else {
+    return
+}
+guard !b else {
+    return
+}
+// do
+```
+
+不推荐
+
+```swift
+if a {
+    if b {
+        // do
+    }
+}
+```
+
+#### 使用三元运算符?:
+
+推荐
+
+```swift
+let b = true
+let a = b ? 1 : 2
+
+let c: Int?
+let b = c ?? 1
+```
+
+不推荐
+
+```swift
+var a: Int?
+if b {
+    a = 1
+} else {
+    a = 2
+}
+```
+
+#### 使用for where优化循环
+
+for循环添加`where`语句，只有当where条件满足时才会进入循环
+
+不推荐
+
+```swift
+for item in collection {
+  if item.hasProperty {
+    // ...
+  }
+}
+```
+
+推荐
+
+```swift
+for item in collection where item.hasProperty {
+  // item.hasProperty == true，才会进入循环
+}
+```
+
+
+#### 使用defer
+
+defer可以保证在函数退出前一定会执行。可以使用defer中实现退出时一定会执行的操作例如资源释放等避免遗漏。
+
+```swift
+func method() {
+    lock.lock()
+    defer {
+        lock.unlock()
+        // 会在method作用域结束的时候调用
+    }
+    // do
+}
+```
+
+### 字符串
+
+使用`"""`
+在定义复杂字符串时，使用多行字符串字面量可以保持原有字符串的换行符号/引号等特殊字符，不需要使用\进行转义。
+
+```swift
+let quotation = """
+The White Rabbit put on his spectacles.  "Where shall I begin,
+please your Majesty?" he asked.
+
+"Begin at the beginning," the King said gravely, "and go on
+till you come to the end; then stop."
+"""
+```
+
+`提示`：上面字符串中的`""`和`换行`可以自动保留。
+
+#### 使用字符串插值
+
+使用字符串插值可以提高代码可读性。
+
+不推荐
+
+```swift
+let multiplier = 3
+let message = String(multiplier) + "times 2.5 is" + String((Double(multiplier) * 2.5))
+```
+
+推荐
+
+```swift
+let multiplier = 3
+let message = "\(multiplier) times 2.5 is \(Double(multiplier) * 2.5)"
+```
+
+#### 集合
+
+使用标准库提供的高阶函数
+
+不推荐
+```swift
+var nums = []
+nums.count == 0
+nums[0]
+```
+
+推荐
+```swift
+var nums = []
+nums.isEmpty
+nums.first
+```
+
+### 访问控制
+
+Swift中默认访问控制级别为`internal`。编码中应当尽可能减小属性/方法/类型的访问控制级别隐藏内部实现。
+
+`提示`：同时也有利于编译器进行优化。
+
+#### 使用private/fileprivate修饰私有属性和方法
+
+```swift
+private let num = 1
+class MyClass {
+    private var num: Int
+}
+```
+
+#### 使用private(set)修饰外部只读/内部可读写属性
+
+```swift
+class MyClass {
+    private(set) var num = 1
+}
+let num = MyClass().num
+MyClass().num = 2 // 会编译报错
+```
+
+
+### 函数
+
+#### 使用参数默认值
+使用参数默认值，可以使调用方传递更少的参数。
+
+不推荐
+
+```swift
+func test(a: Int, b: String?, c: Int?) {
+}
+test(1, nil, nil)
+```
+
+推荐
+
+```swift
+func test(a: Int, b: String? = nil, c: Int? = nil) {
+}
+test(1)
+```
+
+`提示`：相比ObjC，参数默认值也可以让我们定义更少的方法。
+
+#### 限制参数数量
+
+当方法参数过多时考虑使用自定义类型代替。
+
+不推荐
+
+```swift
+func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {
+}
+
+```
+
+推荐
+
+```swift
+struct Params {
+    let a, b, c, d, e, f: Int
+}
+func f(params: Params) {
+}
+```
+
+#### 使用@discardableResult
+
+某些方法使用方并不一定会处理返回值，可以考虑添加@discardableResult标识提示Xcode允许不处理返回值不进行warning提示。
+
+```swift
+// 上报方法使用方不关心是否成功
+func report(id: String) -> Bool {} 
+
+@discardableResult func report2(id: String) -> Bool {}
+
+report("1") // 编译器会警告
+report2("1") // 不处理返回值编译器不会警告
+```
+
+### 元组
+
+避免过长的元组
+
+元组虽然具有类型信息，但是并不包含变量名信息，使用方并不清晰知道变量的含义。所以当元组数量过多时考虑使用自定义类型代替。
+
+```swift
+func test() -> (Int, Int, Int) {
+
+}
+
+let (a, b, c) = test()
+// a，b，c类型一致，没有命名信息不清楚每个变量的含义
+```
+
+### 系统库
+
+`KVO/Notification` 使用 block API
+
+block API的优势：
+
+- KVO 可以支持 KeyPath
+- 不需要主动移除监听，observer释放时自动移除监听
+
+不推荐
+
+```swift
+class Object: NSObject {
+  init() {
+    super.init()
+    addObserver(self, forKeyPath: "value", options: .new, context: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(test), name: NSNotification.Name(rawValue: ""), object: nil)
+  }
+
+  override class func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+  }
+
+  @objc private func test() {
+  }
+
+  deinit {
+    removeObserver(self, forKeyPath: "value")
+    NotificationCenter.default.removeObserver(self)
+  }
+
+}
+```
+
+推荐
+
+```swift
+class Object: NSObject {
+
+  private var observer: AnyObserver?
+  private var kvoObserver: NSKeyValueObservation?
+
+  init() {
+    super.init()
+    observer = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: ""), object: nil, queue: nil) { (_) in 
+    }
+    kvoObserver = foo.observe(\.value, options: [.new]) { (foo, change) in
+    }
+  }
+}
+```
+
+### Protocol
+
+### 使用protocol代替继承
+
+Swift中针对protocol提供了很多新特性，例如`默认实现，关联类型，支持值类型`。在代码设计时可以优先考虑使用protocol来避免臃肿的父类同时更多使用值类型。
+
+`提示`：一些无法用protocol替代继承的场景：
+- 1.需要继承NSObject子类。
+- 2.需要调用super方法。
+- 3.实现抽象类的能力。
+
+### Extension
+
+使用extension组织代码
+
+使用extension将私有方法/父类方法/协议方法等不同功能代码进行分离更加清晰/易维护。
+
+```swift
+class MyViewController: UIViewController {
+  // class stuff here
+}
+// MARK: - Private
+extension: MyViewController {
+    private func method() {}
+}
+// MARK: - UITableViewDataSource
+extension MyViewController: UITableViewDataSource {
+  // table view data source methods
+}
+// MARK: - UIScrollViewDelegate
+extension MyViewController: UIScrollViewDelegate {
+  // scroll view delegate methods
+}
+```
+
+### 代码风格
+
+良好的代码风格可以提高代码的可读性，统一的代码风格可以降低团队内相互理解成本。对于Swift的代码格式化建议使用自动格式化工具实现，将自动格式化添加到代码提交流程，通过定义Lint规则统一团队内代码风格。考虑使用SwiftFormat和SwiftLint。
+
+`提示`：`SwiftFormat`主要关注代码样式的格式化，`SwiftLint`可以使用`autocorrect`自动修复部分不规范的代码。
+
+常见的自动格式化修正:
+- 移除多余的;
+- 最多只保留一行换行
+- 自动对齐空格
+- 限制每行的宽度自动换行
+
+### 性能优化
+
+性能优化上主要关注提高运行时性能和降低二进制体积。需要考虑如何更好的使用Swift特性，同时提供更多信息给编译器进行优化。
+
+#### 使用Whole Module Optimization
+
+当Xcode开启`WMO`优化时，编译器可以将整个程序编译为`一个文件`进行更多的优化。例如通过推断`final/函数内联/泛型特化`更多使用静态派发，并且可以移除部分未使用的代码。
+
+#### 使用源代码打包
+
+当我们使用组件化时，为了提高编译速度和打包效率，通常单个组件独立编译生成静态库，最后多个组件直接使用静态库进行打包。这种场景下`WMO`仅针对`internal`以内作用域生效，对于`public/open`缺少外部使用信息所以无法进行优化。所以对于大量使用Swift的项目，使用全量代码打包更有利于编译器做更多优化。
+
+#### 减少方法动态派发
+
+- 使用final - class/方法/属性申明为final，编译器可以优化为静态派发
+- 使用private - 方法/属性申明为private，编译器可以优化为静态派发
+- 避免使用dynamic - dynamic会使方法通过ObjC消息转发的方式派发
+- 使用WMO - 编译器可以自动分析推断出final优化为静态派发
+
+
+#### 使用Slice共享内存优化性能
+
+在使用`Array/String`时，可以使用`Slice`切片获取一部分数据。`Slice`保存对原始`Array/String`的引用共享内存数据，不需要重新分配空间进行存储。
+
+```swift
+let midpoint = absences.count / 2
+
+let firstHalf = absences[..<midpoint]
+let secondHalf = absences[midpoint...]
+// firstHalf/secondHalf并不会复制和占用更多内存
+```
+
+`提示`：应避免一直持有Slice，Slice会延长原始Array/String的生命周期导致无法被释放造成内存泄漏。
+
+#### protocol添加AnyObject
+
+```swift
+protocol AnyProtocol {}
+
+protocol ObjectProtocol: AnyObject {}
+```
+
+当protocol仅限制为class使用时，继承AnyObject协议可以使编译器不需要考虑值类型实现，提高运行时性能。
+
+#### 使用@inlinable进行方法内联优化
+
+```swift
+// 原始代码
+let label = UILabel().then {
+    $0.textAlignment = .center
+    $0.textColor = UIColor.black
+    $0.text = "Hello, World!"
+}
+```
+
+以then库为例，他使用闭包进行对象初始化以后的相关设置。但是 then 方法以及闭包也会带来额外的性能消耗。
+
+#####内联优化
+
+```swift
+@inlinable
+public func then(_ block: (Self) throws -> Void) rethrows -> Self {
+    try block(self)
+    return self
+}
+```
+
+```swift
+// 编译器内联优化后
+let label = UILabel() 
+label.textAlignment = .center
+label.textColor = UIColor.black
+label.text = "Hello, World!"
+```
+
+#### 属性
+
+使用lazy延时初始化属性
+
+```swift
+class View {
+    var lazy label: UILabel = {
+        let label = UILabel()
+        self.addSubView(label)
+        return label
+    }()
+}
+```
+
+lazy属性初始化会延迟到第一次使用时，常见的使用场景：
+
+- 初始化比较耗时
+- 可能不会被使用到
+- 初始化过程需要使用self
+
+
+`提示`：lazy属性不能保证线程安全
+
+#### 避免使用private let属性
+
+`private let`属性会增加每个class对象的`内存大小`。同时会`增加包大小`，因为需要为属性生成相关的信息。可以考虑使用文件级private let申明或static常量代替。
+
+不推荐
+
+```swift
+class Object {
+    private let title = "12345"
+}
+```
+
+推荐
+
+```swift
+private let title = "12345"
+class Object {
+    static let title = ""
+}
+```
+
+`提示`：这里并不包括通过init初始化注入的属性。
+
+#### 使用didSet/willSet时进行Diff
+
+某些场景需要使用didSet/willSet属性检查器监控属性变化，做一些额外的计算。但是由于didSet/willSet并不会检查新/旧值是否相同，可以考虑添加新/旧值判断，只有当值真的改变时才进行运算提高性能。
+
+优化前
+
+```swift
+class Object {
+    var orderId: String? {
+        didSet {
+            // 拉取接口等操作
+        }
+    }
+}
+```
+
+例如上面的例子，当每一次orderId变更时需要重新拉取当前订单的数据，但是当orderId值一样时，拉取订单数据是无效执行。
+
+优化后
+
+```swift
+class Object {
+    var orderId: String? {
+        didSet {
+            // 判断新旧值是否相等
+            guard oldValue != orderId else {
+                return
+            }
+            // 拉取接口等操作
+        }
+    }
+}
+```
+
+### 集合
+
+集合使用lazy延迟序列
+
+```swift
+var nums = [1, 2, 3]
+var result = nums.lazy.map { String($0) }
+result[0] // 对1进行map操作
+result[1] // 对2进行map操作
+```
+
+在集合操作时使用lazy，可以将数组运算操作推迟到第一次使用时，避免一次性全部计算。
+
+`提示`：`例如长列表，我们需要创建每个cell对应的视图模型，一次性创建太耗费时间。`
+
+#### 使用合适的集合方法优化性能
+
+不推荐
+
+```swift
+var items = [1, 2, 3]
+items.filter({ $0 > 1 }).first // 查找出所有大于1的元素，之后找出第一个
+```
+
+推荐
+
+```swift
+var items = [1, 2, 3]
+items.first(where: { $0 > 1 }) // 查找出第一个大于1的元素直接返回
+```
+
+####  使用值类型
+
+Swift中的值类型主要是`结构体/枚举/元组`。
+
+- 启动性能 - APP启动时值类型没有额外的消耗，class有一定额外的消耗。
+- 运行时性能- 值类型不需要在堆上分配空间/额外的引用计数管理。更少的内存占用和更快的性能。
+- 包大小 - 相比class，值类型不需要创建ObjC类对应的ro_data_t数据结构。
+
+
+`提示`：class即使没有继承`NSObject`也会生成`ro_data_t`，里面包含了`ivars`属性信息。如果属性/方法申明为@objc还会生成对应的`方法列表`。
+
+`提示`：struct无法代替class的一些场景：
+
+- 1.需要使用继承调用super。
+- 2.需要使用引用类型。
+- 3.需要使用deinit。
+- 4.需要在运行时动态转换一个实例的类型。
+
+
+`提示`：不是所有struct都会保存在栈上，`部分数据大的struct也会保存在堆上`。
+
+#### 集合元素使用值类型
+
+集合元素使用值类型。因为NSArray并不支持值类型，编译器不需要处理可能需要桥接到NSArray的场景，可以移除部分消耗。
+纯静态类型避免使用class
+
+当class只包含静态方法/属性时，考虑使用enum代替class，因为class会生成更多的二进制代码。
+
+不推荐
+
+```swift
+class Object {
+    static var num: Int
+    static func test() {}
+}
+```
+
+推荐
+
+```swift
+enum Object {
+    static var num: Int
+    static func test() {}
+}
+```
+
+`提示`：为什么用enum而不是struct，`因为struct会额外生成init方法`。
+
+#### 值类型性能优化
+
+考虑使用引用类型
+
+值类型为了维持值语义，会在每次赋值/参数传递/修改时进行`复制`。虽然编译器本身会做一些优化，例如写时复制优化，在修改时减少复制频率，但是这仅针对于标准库提供的`集合和String`结构有效，对于自定义结构需要自己实现。对于参数传递编译器在一些场景会优化为直接传递引用的方式避免复制行为。
+
+但是对于一些数据特别大的结构，同时需要频繁变更修改时也可以考虑使用引用类型实现。
+
+#### 使用inout传递参数减少复制
+
+虽然编译器本身会进行写时复制的优化，但是部分场景编译器无法处理。
+
+不推荐
+
+```swift
+func append_one(_ a: [Int]) -> [Int] {
+  var a = a
+  a.append(1) // 无法被编译器优化，因为这时候有2个引用持有数组
+  return a
+}
+
+var a = [1, 2, 3]
+a = append_one(a)
+```
+
+推荐
+
+直接使用inout传递参数
+
+```swift
+func append_one_in_place(a: inout [Int]) {
+  a.append(1)
+}
+
+var a = [1, 2, 3]
+append_one_in_place(&a)
+```
+
+#### 使用isKnownUniquelyReferenced实现写时复制
+
+默认情况下结构体中包含引用类型，在修改时只会重新拷贝引用。但是我们希望`CustomData`具备值类型的特性，所以当修改时需要重新复制NSMutableData避免复用。但是复制操作本身是耗时操作，我们希望可以减少一些不必要的复制。
+
+优化前
+
+```swift
+struct CustomData {
+    fileprivate var _data: NSMutableData
+    var _dataForWriting: NSMutableData {
+        mutating get {
+            _data = _data.mutableCopy() as! NSMutableData
+            return _data
+        }
+    }
+    init(_ data: NSData) {
+        self._data = data.mutableCopy() as! NSMutableData
+    }
+
+    mutating func append(_ other: MyData) {
+        _dataForWriting.append(other._data as Data)
+    }
+}
+
+var buffer = CustomData(NSData())
+for _ in 0..<5 {
+    buffer.append(x) // 每一次调用都会复制
+}
+```
+
+优化后
+
+使用isKnownUniquelyReferenced检查如果是唯一引用不进行复制。
+
+```
+final class Box<A> {
+    var unbox: A
+    init(_ value: A) { self.unbox = value }
+}
+
+struct CustomData {
+    fileprivate var _data: Box<NSMutableData>
+    var _dataForWriting: NSMutableData {
+        mutating get {
+            // 检查引用是否唯一
+            if !isKnownUniquelyReferenced(&_data) {
+                _data = Box(_data.unbox.mutableCopy() as! NSMutableData)
+            }
+            return _data.unbox
+        }
+    }
+    init(_ data: NSData) {
+        self._data = Box(data.mutableCopy() as! NSMutableData)
+    }
+}
+
+var buffer = CustomData(NSData())
+for _ in 0..<5 {
+    buffer.append(x) // 只会在第一次调用时进行复制
+}
+```
+
+`提示`：对于ObjC类型`isKnownUniquelyReferenced`会直接返回false。
+
+### 减少使用Objc特性
+
+#### 避免使用Objc类型
+
+尽可能避免在Swift中使用`NSString/NSArray/NSDictionary`等ObjC基础类型。以Dictionary为例，虽然Swift Runtime可以在NSArray和Array之间进行隐式桥接需要O(1)的时间。但是`字典当Key和Value既不是类也不是@objc协议时，需要对每个值进行桥接，可能会导致消耗O(n)时间`。
+
+#### 减少添加@objc标识
+
+@objc标识虽然不会强制使用消息转发的方式来调用方法/属性，但是他会默认ObjC是可见的会生成和ObjC一样的`ro_data_t`结构。
+
+
+#### 避免使用@objcMembers
+
+使用@objcMembers修饰的类，默认会`为类/属性/方法/扩展都加上@objc标识`。
+
+```swift
+@objcMembers class Object: NSObject {
+}
+```
+
+`提示`：你也可以使用@nonobjc取消支持ObjC。
+
+#### 避免继承NSObject
+
+你只需要在需要使用NSObject特性时才需要继承，例如需要实现`UITableViewDataSource`相关协议。
+
+#### 使用let变量/属性
+
+##### 优化集合创建
+
+集合不需要修改时，使用let修饰，编译器会优化创建集合的性能。例如针对let集合，编译器在创建时可以`分配更小的内存大小`。
+
+##### 优化逃逸闭包
+
+在Swift中，当捕获var变量时编译器需要生成一个在堆上的Box保存变量用于之后对于变量的读/写，同时需要额外的内存管理操作。如果是let变量，编译器可以保存值复制或引用，避免使用Box。
+
+
+#### 避免使用大型struct使用class代替
+
+大型struct通常是指`属性特别多并且嵌套类型很多`。目前swift编译器针对struct等值类型编译优化处理的并不好，会生成大量的`assignWithCopy`、`assignWithCopy`等copy相关方法，生成大量的二进制代码。使用class类型可以避免生成相关的copy方法。
+
+`提示`：不要小看这部分二进制的影响，个人在日常项目中遇到过复杂的大型struct能生成`几百KB`的二进制代码。但是目前并没有好的方法去发现这类struct去做优化，只能通过相关工具去查看生成的二进制详细信息。希望官方可以早点优化。
+
+#### 优先使用Encodable/Decodable协议代替Codable
+
+因为实现`Encodable`和`Decodable`协议的结构，编译器在编译时会自动生成对应的`init(from decoder: Decoder)`和`encode(to: Encoder)`方法。`Codable`同时实现了`Encodable`和`Decodable`协议，但是大部分场景下我们只需要`encode`或`decode`能力，所以明确指定实现`Encodable`或`Decodable`协议可以减少生成对应的方法减少包体积。
+
+`提示`：对于属性比较多的类型结构会产生很大的二进制代码，有兴趣可以用相关的工具看看生成的二进制文件。
+
+####减少使用Equatable协议
+
+因为实现`Equatable`协议的结构，编译器在编译时会自动生成对应的equal方法。`默认实现是针对所有字段进行比较会生成大量的代码`。所以当我们不需要实现==比较能力时不要实现Equatable或者对于属性特别多的类型也可以考虑重写Equatable协议，只针对部分属性进行比较，这样可以生成更少的代码减少包体积。
+
+`提示`：对于属性特别多的类型也可以考虑重写Equatable协议，只针对部分属性进行比较，同时也可以提升性能。
 
 
 
