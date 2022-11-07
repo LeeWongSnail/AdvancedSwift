@@ -6,19 +6,19 @@
 
 这个类就不能被继承； 如：`String`类、`StringBuffer`类、`System`类等
 
-![finalclass]()
+![finalclass](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/finalclass.pic.jpg)
 
 #### final 修饰方法
 
 不能被重写； 如：Object类的getClass（）
 
-![fianlmethod]()
+![fianlmethod](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/finalmetho.jpg)
 
 #### final修饰属性
 
 变为常量 属性(没有默认初始化的值)；习惯上，常量用大写字符来写！final常量一旦确定后，就禁止再次复制！
 
-![finalproperty]()
+![finalproperty](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/finalproperty.pic.jpg)
 
 #### final试用场景
 
@@ -73,4 +73,6 @@ class Child: Parent {
 #### 参考文献
 
 [Increasing Performance by Reducing Dynamic Dispatch](https://developer.apple.com/swift/blog/?id=27)
+
 [FINAL](https://swifter.tips/final/)
+
