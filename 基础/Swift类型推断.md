@@ -10,6 +10,8 @@ Swift是一种静态类型语言，这就意味着我们声明的每个属性和
 
 - 类型推断允许你省略掉一些次要的细节(Type inference allows you to omit incidental details)
 
+![](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/classNameType.png)
+
 ### 类型推断的过程
 
 我们已WWDC20中提供的例子来了解类型推断的实现过程
@@ -211,14 +213,15 @@ FilteredList<Smoothie, Bool, SmoothieRowView>(
 
 如果你想看到更详细的信息可以通过设置 Xcode-Behaviors-EditBehaviors，这样你就可以看到，编译器提示的错误是在哪个位置进行类型推断时认为发生了错误
 
-![设置]()
+![设置](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/xocdenavigator.png)
 
 例如
 
-![错误]()
+![错误](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/errortracking.png)
 
 
 
 ### 参考文献
 
 [Embrace Swift type inference](https://developer.apple.com/videos/play/wwdc2020/10165/)
+
