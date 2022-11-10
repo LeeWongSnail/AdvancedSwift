@@ -185,9 +185,74 @@ protocol MyProtocol {
 
 `dynamic`使类中定义的方法采用`消息派发`。它还会将方法暴露给`Objective-C runtime`运行时。`dynamic`可以用来使`扩展中声明的方法能够被重载`。dynamic关键字同时适用于NSObject子类和Swift类
 
+##### @objc & @nonobjc
+
+@objc和@nonobjc修饰可以改变方法对于Objective-C运行时的可见性。
+
+- @objc不会改变方法的派发方式，它只是将方法暴露给Objective-C运行时。
+- @nonobjc会改变派发方式。它可以用来阻止消息派发，因为它不会添加方法到Objective-C运行时，而运行时使消息派发必须依赖的基础。
+
+`建议`： 不建议使用@nonobjc，其功能与final类似
+
+##### final @objc
+
+我们上面提到了`final`会使用静态派发，`@objc`虽不会改变派发方式但是会修改
+
+将一个方法标记为`final`，并且让方法用`@objc来`进行消息派发也是可能行的。这会造成方法调用使用直接派发，但是，会向`Objective-C`运行时注册`selector`（方法选择器）。这使得方法既可以响应`perform(selector)`和其它的`Objective-C`特性，又享有直接派发的高效率。
+
+##### @inline
+
+Swift还支持`@inline`，它提供了一些编译器可以用来改变派发方式的暗示。有趣的是`dynamic @inline(__always) func dynamicOrDirect() {}`可以编译。它确实只是一种暗示，因为汇编代码显示方法仍然是使用消息派发。这将会导致不可预知的行为，所以，`应该避免这样的声明`。
+
+
+##### 总结
+
+| Modifier  | Dispatch  |
+|:----------|:----------|
+| final    | Static    |
+| dynamic    | Message   |
+| @objc    | Modify Objective-C Visibility    |
+| @inline    | Code generation hit for direct dispatch    |
+
+
+#### 可见性优化
+
+Swift将会尽可能的优化消息的派发方式，如果一个方法没有被重载过，Swift会尽可能的使用静态派发。这种情况下大多都是好的，但是在Target/Action模式下有问题，比如:
+
+```swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+    navigationItem.rightBarButtonItem = UIBarButtonItem(
+        title: "Sign In", style: .plain, target: nil,
+        action: #selector(ViewController.signInAction)
+    )
+}
+
+private func signInAction() {}
+
+```
+
+![no@objcerror]()
+
+这里编译器会提示我们一个错误 `Type 'ViewController' has no member 'signInAction'`。
+
+根据错误提示我们知道，编译器觉得ViewController这个类没有signInAction这个方法，我们发现这个方法的调用是通过Target-Action的，所以对于非Cocoa的方法不可见，那么我们需要添加@objc才可以让这个方法运行时可见
+
+
+#### 总结
+
+|   | 静态派发  | 表派发  | 消息派发  |
+|:----------|:----------|:----------|:----------|
+| NSObject    | @nonobjc or fianl 修饰    | 初始声明方法    | extension中的dynamic方法   |
+| Class    | extension中的fianl    |初始声明方法    | dynamic声明的方法    |
+| Protocol    | extension中的方法    | 初始声明方法    | @objc声明的方法   |
+| Value Type    | 所有方法    | n/a    | n/a    |
+
 
 
 ### 参考文档
+
+[Method Dispatch in Swift](https://juejin.cn/post/7028530707366412325)
 
 [Method Dispatch in Swift, and its effect on performance](https://medium.com/@venki0119/method-dispatch-in-swift-effects-of-it-on-performance-b5f120e497d3)
 
