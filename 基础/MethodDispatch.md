@@ -232,7 +232,7 @@ private func signInAction() {}
 
 ```
 
-![no@objcerror]()
+![no@objcerror](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/no%40objcerror.png)
 
 这里编译器会提示我们一个错误 `Type 'ViewController' has no member 'signInAction'`。
 
