@@ -61,6 +61,8 @@ Long-term storage of ArraySlice instances is discouraged. A slice holds a refere
 
 顾名思义，ArraySlice就是Array的一个切片，ArraySlice的作用主要体现在当我们需要对一个较大数组的某一部分进行操作可以更加高效。ArraySlice是直接使用原数组的某一部分，而非将数组的某一部分拷贝出来，由于ArraySlice对外提供的接口与Array一直，因此所有对Array有效的操作对ArraySlice也同样有效。
 
+![](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/ArraySlice.png)
+
 ```swift
 let absences = [0, 2, 0, 4, 0, 3, 1, 0]
 
@@ -80,7 +82,7 @@ if firstHalfSum > secondHalfSum {
 
 ```
 
-![arrayslice]()
+![arrayslice](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/arraysliceType.png)
 
 同时 
 
@@ -147,7 +149,7 @@ print(secondHalf[0])
 ```
 则 运行时会直接crash提示
 
-![arraysliceindexcrash]()
+![arraysliceindexcrash](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/arraysliceindexcrash.png)
 
 结合上面我们说的，我们在来看下这种操作后呢
 
