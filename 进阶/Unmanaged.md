@@ -35,7 +35,7 @@ public struct Unmanaged<Instance: AnyObject> {
 
 在OC中一开始的MRC时代，我们都是还需要手动进行内存管理，每一个retain都要对应一个release，这样才能避免内存泄露和僵尸对象。自从ARC引入后，我们就不需要手动的进行内存管理，下图就是ARC示意图:
 
-![unmanaged_arc]()
+![unmanaged_arc](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/unmanaged_arc.png)
 
 但是，即使使用了ARC也并不意味着所有的类型都不需要手动管理内存了，我们来看下下面这段代码:
 
