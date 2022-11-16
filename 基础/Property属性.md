@@ -268,7 +268,7 @@ struct SmallRectangle {
 }
 ```
 
-详情可以查看我的另外一片文章[Property Wrapper]()
+详情可以查看我的另外一片文章[Property Wrapper](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/%E5%9F%BA%E7%A1%80/PropertyWrappers.md)
 
 ### 全局变量和局部变量
 
