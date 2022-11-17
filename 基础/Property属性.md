@@ -277,7 +277,117 @@ struct SmallRectangle {
 全局常量和变量永远是延迟计算的，与延迟存储属性有着相同的行为。不同于延迟存储属性，全局常量和变量不需要标记 lazy 修饰符。
 
 
+
 ### 类型属性
+
+类型属性不像实例属性一样，实例属性是每当你创建一个实例，这个实例就拥有一堆属性。类型属性是类型的属性，而非类型的实例的属性，无论你创建多少个类型的实例，实际都只有一个拷贝。
+
+类型属性在定义那些对特定类型的所有实例都通用的值的时候很有用，比如实例要使用的常量属性（类似 C 里的静态常量），
+或者储存对这个类型的所有实例全局可见的值的存储属性（类似 C 里的静态变量）。
+
+存储类型属性可以是变量或者常量。计算类型属性总要被声明为变量属性，与计算实例属性一致。
+
+注意:
+
+- 不同于存储实例属性，你必须总是给存储类型属性一个默认值。这是因为类型本身不能拥有能够在初始化时给存储类型属性赋值的初始化器。
+
+- 存储类型属性是在它们第一次访问时延迟初始化的。它们保证只会初始化一次，就算被多个线程同时访问，他们也不需要使用 lazy 修饰符标记。有点类似OC中的initlize方法
+
+#### 类型属性语法
+
+类型属性是写在类型的定义之中的，在类型的花括号里，并且每一个类型属性都显式地放在它支持的类型范围内。
+
+- 使用 static 关键字来声明类型属性
+
+- 对于类类型的计算类型属性，你可以使用 class 关键字来允许子类重写父类的实现。
+
+```swift 
+struct SomeStructure {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 1
+    }
+}
+enum SomeEnumeration {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 6
+    }
+}
+class SomeClass {
+    static var storedTypeProperty = "Some value."
+    static var computedTypeProperty: Int {
+        return 27
+    }
+    class var overrideableComputedTypeProperty: Int {
+        return 107
+    }
+}
+
+```
+注意: 示例中计算类型属性示例时对于只读计算类型属性的，但你还是可以使用与计算实例属性相同的语法定义可读写计算类型属性。
+
+
+#### 查询类型属性
+
+类型属性使用点语法来查询和设置，与实例属性一致。总之，类型属性在类里查询和设置，而不是这个类型的实例。
+
+```swift
+print(SomeStructure.storedTypeProperty)
+// prints "Some value."
+SomeStructure.storedTypeProperty = "Another value."
+print(SomeStructure.storedTypeProperty)
+// prints "Another value."
+print(SomeEnumeration.computedTypeProperty)
+// prints "6"
+print(SomeClass.computedTypeProperty)
+// prints "27"
+```
+
+####设置类型属性
+
+```swift
+struct AudioChannel {
+    static let thresholdLevel = 10
+    static var maxInputLevelForAllChannels = 0
+    var currentLevel: Int = 0 {
+        didSet {
+            if currentLevel > AudioChannel.thresholdLevel {
+                // cap the new audio level to the threshold level
+				// didset中调用set方法 会导致循环吗？？？？？？？
+                currentLevel = AudioChannel.thresholdLevel
+            }
+            if currentLevel > AudioChannel.maxInputLevelForAllChannels {
+                // store this as the new overall maximum input level
+                AudioChannel.maxInputLevelForAllChannels = currentLevel
+            }
+        }
+    }
+}
+```
+
+- thresholdLevel 表示可以输入的电平最大值
+- maxInputLevelForAllChannels 已输入的电平的最大值
+
+```swift
+var leftChannel = AudioChannel()
+var rightChannel = AudioChannel()
+
+leftChannel.currentLevel = 7
+print(leftChannel.currentLevel)
+// prints "7"
+print(AudioChannel.maxInputLevelForAllChannels)
+// prints "7"
+
+rightChannel.currentLevel = 11
+print(rightChannel.currentLevel)
+// prints "10"
+print(AudioChannel.maxInputLevelForAllChannels)
+// prints "10"
+```
+### 参考文献
+
+[属性](https://www.cnswift.org/properties#spl-12)
 
 
 
