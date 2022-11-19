@@ -11,11 +11,11 @@ lazy修饰的属性我们一般称之为懒加载，即类实例构造的时候�
 
 - 懒加载的属性必须有初始值
 
-![lazyinit]()
+![lazyinit](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/lazynoinit.png)
 
 - 懒加载属性必须使用var 不能使用let
 
-![lazy let]()
+![lazy let](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/lazylet.png)
 
 一个正确的懒加载属性定义应该如下:
 
@@ -42,9 +42,11 @@ private func test() {
 ```
 
 首先执行到h.age=2
-
+![step1](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/lazystep1.png)
 
 然后执行到尾部
+
+![step2](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/lazystep2.png)
 
 ### lazy 属性分析
 
@@ -124,6 +126,7 @@ bb3(%19 : $Int):                                  // Preds: bb2 bb1
 
 ```
 
+完整的sil后的代码在[这里](https://github.com/LeeWongSnail/AdvancedSwift/blob/main/res/lazysil.txt)
 
 ### 参考文献
 
