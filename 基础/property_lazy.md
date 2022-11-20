@@ -214,7 +214,7 @@ private func test() {
 
 `注意`: 对于一个属性来说，一旦自定义了get方法，那么这个属性就从存储属性变为了计算属性。对于计算属性来说，你不可以只有set方法
 
-![propertyonlyset]()
+![propertyonlyset](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/propertyonlyset.jpeg)
 
 
 
