@@ -49,7 +49,7 @@ class Baby: Child {
 
 上述代码在编译时提示
 
-![overridelet]()
+![overridelet](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/overrideletproperty.png)
 
 `Cannot override with a stored property 'age'`,虽然是我们预料之中的报错，但是这个提示确并非我们希望的。这是什么原因呢？
 
@@ -60,7 +60,7 @@ override var name: String?
 ```
 果然
 
-![overridevar]()
+![overridevar](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/overridevar.png)
 
 依然提示`Cannot override with a stored property 'name'`,难道子类不能重载父类的属性？？？
 
