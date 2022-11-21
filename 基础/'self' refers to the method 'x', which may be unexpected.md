@@ -18,7 +18,7 @@ private let addButton: UIButton = {
 
 我发现编译器给我提示了一个警告(目前使用的是Xcode14.0)：
 
-![xcodewarningletproperty]()
+![xcodewarningletproperty](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/xcodewarningletproperty.png)
 
 很奇怪的警告，但是当我看到这种写法时顿时觉得更加奇怪，为什么要这么定义一个UI控件呢？
 
@@ -95,7 +95,7 @@ private let addButton: UIButton = {
 ```
 首先先来确认下哪个方法先执行:
 
-![privateletfirst]()
+![privateletfirst](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/privateletfirst.png)
 
 那么我们来通过断点确认下这时候self是什么？
 
@@ -131,3 +131,4 @@ self实际是一个Function,这个function是闭包结果是返回一个viewCont
 [[SR-4865] target self should be illegal in property constructor](https://github.com/apple/swift/issues/47442)
 
 [[SR-4559] Method called 'self' can be confused with regular 'self' #47136](https://github.com/apple/swift/issues/47136)
+
