@@ -68,7 +68,7 @@ init(windSpeed: Int, chanceOfRain: Int) {
 
 由于在init方法中由于参数名和属性名是一样的，所以我们这里如果去掉了self,xcode会直接提示`Cannot assign to value: 'windSpeed' is a 'let' constant`
 
-![initerrorwithoutself]()
+![initerrorwithoutself](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/initerrorwithoutself.png)
 
 这时候self可以帮我们准确的区分是属性还是参数
 
@@ -291,3 +291,4 @@ print(run.speed) // => 0
 ### 参考文档
 
 [How to Use Correctly 'self' Keyword in Swift](https://dmitripavlutin.com/how-to-use-correctly-self-keyword-in-swift/)
+
