@@ -62,7 +62,7 @@ baby = nil
 ```
 但实际并没有，因为: Baby和BabySister之间还在互相持有。这就导致你还要为这段关系支付`工资`。
 
-![babyandbabysister]()
+![babyandbabysister](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/babyandbabysister.png)
 
 ### 捕获列表
 
@@ -239,7 +239,7 @@ func publish(post: Post) {
 
 通过上面的了解我们可以很清楚的了解这两者之间的区别，那么使用场景也很清晰: 由原始值的生命周期来决定
 
-![weakorunowned]()
+![weakorunowned](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/weakorunowned.png)
 
 
 这就对应着两种场景：
@@ -273,7 +273,7 @@ Swift中的每个对象都保存了两个引用技术:
 
 在编译时，当Optimization Level被设置为 -OFast时, unowned引用不会验证引用对象的有效性，unowned 引用的行为就会像 Objective-C 中的 __unsafe_unretained 一样。如果引用对象无效，unowned 引用将会指向已经释放垃圾内存（这种实现称之 unowned(unsafe)）。
 
-![unownedoptimizationlevel]()
+![unownedoptimizationlevel](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/unownedoptimizationlevel.png)
 
 当一个unowned引用被释放后，如果这回收没有其他强引用或者unowned引用指向这个对象，那么这个对象最终将会被析构，而非强引用计数器为零的情况下被析构。
 
