@@ -88,7 +88,7 @@ swift在初始化器之间的委托调用有下面三个原则:
 
 总结下来就是: 指定初始化器必须总是向上委托，便捷初始化器必须总是横向委托，具体如下图:
 
-![referType_initializerDelegation]()
+![referType_initializerDelegation](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/referType_initializerDelegation.png)
 
 #### 两段式初始化
 
@@ -138,7 +138,7 @@ swift执行四种安全检查来确保两段式初始化顺利完成:
 
 ##### 图示
 
-![referType_twoPhaseInitialization]()
+![referType_twoPhaseInitialization](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/referType_twoPhaseInitialization.png)
 
 在这个例子中，初始化过程从一个子类的便捷初始化器开始。这个便捷初始化器还不能修改任何属性。它委托给了同一类里的指定初始化器。
 
@@ -150,7 +150,7 @@ swift执行四种安全检查来确保两段式初始化顺利完成:
 
 下图是相同的初始化过程在第二阶段的样子：
 
-![referType_twoPhaseInitialization02_2x]()
+![referType_twoPhaseInitialization02_2x](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/referType_twoPhaseInitialization02_2x.png)
 
 现在父类的指定初始化器有机会来定制更多实例(尽管没有这种必要)。
 
