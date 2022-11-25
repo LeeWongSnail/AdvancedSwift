@@ -157,4 +157,10 @@ SwiftDemo.AppManager is being deinit
 虽然单例的写法有很多中，但是只要我们知道单例必须满足的三个条件，我们就可以一一的去分析，然后判断是否是一个合理的单例写法。
 
 
+### 参考文献
+
+[Swift中单例模式详解](https://www.jianshu.com/p/d843b18f0500)
+
+[单例在Swift中的正确实现方式](https://github.com/hehonghui/iOS-tech-frontier/blob/master/issue-14/%E5%8D%95%E4%BE%8B%E5%9C%A8Swift%E4%B8%AD%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F.md)
+[THE RIGHT WAY TO WRITE A SINGLETON](https://krakendev.io/blog/the-right-way-to-write-a-singleton)
 
