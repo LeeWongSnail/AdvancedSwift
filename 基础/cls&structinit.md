@@ -1,6 +1,6 @@
 ## 初始化器委托
 
-初始化是为类、结构体或者枚举准备实例的过程。这个过需要给实例里的每一个存储属性设置一个初始值并且在新实例可以使用之前执行任何其他所必须的配置或初始化。
+初始化是为类、结构体或者枚举`准备实例`的过程。这个过需要给实例里的每一个存储属性设置一个初始值并且在新实例可以使用之前执行任何其他所必须的配置或初始化。
 
 不同于 Objective-C 的初始化器，Swift 初始化器不返回值。
 
@@ -48,9 +48,9 @@ struct Rect {
 
 ### 引用类型的初始化器
 
-所有类的存储属性(包括从他父类继承的所有属性)都必须在初始化期间分配初始值
+所有类的存储属性(包括从他父类继承的所有属性)都必须在`初始化期间分配初始值`
 
-swift为引用类型定义了两种初始化器以确保所有的存储属性接受一个初始值，这些就是所谓的指定初始化器和便捷初始化器。
+swift为引用类型定义了`两种初始化器`以确保所有的存储属性接受一个初始值，这些就是所谓的`指定初始化器`和`便捷初始化器`。
 
 #### 指定初始化器和便捷初始化器
 
@@ -72,7 +72,7 @@ convenience init(parameters) {
 
 二者的区别和联系:
 
-- 指定初始化器是主要的初始化器，而编辑初始化器是次要的，是可有可无的
+- 指定初始化器是主要的初始化器，而便捷初始化器是次要的，是可有可无的
 - 指定初始化器是初始化开始并持续初始化过程到父类链的传送节点
 - 每个类都至少有一个指定初始化器，在某些情况可以通过从父类继承一个或多个指定初始化器来满足
 - 便捷初始化器可以调用指定初始化器来给指定的初始化器设置默认参数
@@ -83,7 +83,7 @@ convenience init(parameters) {
 swift在初始化器之间的委托调用有下面三个原则:
 
 - 指定初始化器必须从他的直系父类调用指定初始化器
-- 编辑初始化器必须从相同的类里调用另一个初始化器
+- 便捷初始化器必须从相同的类里调用另一个初始化器
 - 便捷初始化器最终必须调用一个指定初始化器
 
 总结下来就是: 指定初始化器必须总是向上委托，便捷初始化器必须总是横向委托，具体如下图:
@@ -160,9 +160,386 @@ swift执行四种安全检查来确保两段式初始化顺利完成:
 
 #### 初始化器的继承和重写
 
+不像在 Objective-C 中的子类，`Swift 的子类不会默认继承父类的初始化器`。
 
-Swift中let属性在init方法调用前就被调用了 那存储到哪个位置了呢？
+Swift 的这种机制`防止父类的简单初始化器被一个更专用的子类继承`并被用来创建一个没有完全或错误初始化的新实例的情况发生。
 
-为什么init方法中设置属性值不会调用监听器方法
 
+在查看下面内容之前，我们务必要了解清楚下面几个初始化器的含义:
+
+- 指定初始化器 初始化所有那个类引用的属性并且调用合适的父类初始化器来继续这个初始化过程给父类链 一个类通常只有一个 关键词 super
+- 便捷初始化器 convenience 不能独立初始化所有属性，需要调用指定初始化器
+
+- 默认初始化器 init() 默认初始化器(如果可用的话)总是类的指定初始化器
+- 成员初始化器 Size(width: 2.0, height: 2.0)
+- 自定义初始化器 
+
+
+我们先看例子:
+
+```swift
+class Vehicle {
+    var numberOfWheels = 0
+    var description: String {
+        return "\(numberOfWheels) wheel(s)"
+    }
+}
+```
+Vehicle 类只为它的存储属性提供了默认值，并且没有提供自定义的初始化器。它会自动收到一个`默认初始化器`。
+
+```swift
+let vehicle = Vehicle()
+print("Vehicle: \(vehicle.description)")
+// Vehicle: 0 wheel(s)
+```
+面的例子定义了一个名为 Bicycle 继承自 Vehicle 的子类：
+
+```swift
+class Bicycle: Vehicle {
+    override init() {
+        super.init()
+        numberOfWheels = 2
+    }
+}
+```
+子类 Bicycle 定义了一个自定义初始化器 init() 。这个指定初始化器和 Bicycle 的父类的指定初始化器相匹配，所以 Bicycle 中的指定初始化器需要带上 override 修饰符。
+
+看了上面的例子之后我们在来理解下下面这段文字:
+
+- 当你写的子类初始化器匹配父类指定初始化器的时候，你实际上可以重写那个初始化器。因此，在子类的初始化器定义之前你必须写 override 修饰符。即使是自动提供的默认初始化器你也可以重写。
+这一个便如上面Bicycle重写的init方法
+
+- 如果你写了一个匹配父类便捷初始化器的子类初始化器，父类的便捷初始化器将永远不会通过你的子类直接调用。因此，你的子类不能(严格来讲)提供父类初始化器的重写。当提供一个匹配的父类便捷初始化器的实现时，你不用写 override 修饰符。
+
+```swift
+class FatherClass {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+    convenience init() {
+        self.init(name: "Lee")
+    }
+}
+
+class SonClass: FatherClass {
+    init() {
+        super.init(name: "Wong")
+    }
+}
+```
+
+#### 初始化器的自动继承
+
+##### 规则一
+
+如果你的子类没有定义任何指定初始化器，它会自动继承父类所有的指定初始化器
+
+##### 规则二
+
+如果你的子类提供了所有父类指定初始化器的实现——要么是通过规则1继承来的，要么通过在定义中提供自定义实现的——那么它自动继承所有的父类便捷初始化器。
+
+##### 验证
+
+这个例子定义了 Food ， RecipeIngredient 和 ShoppingListItem 三个类的层级关系，并演示了它们的继承关系是如何相互作用的。
+
+```swift
+class Food {
+    var name: String
+    init(name: String) {
+        self.name = name
+    }
+    convenience init() {
+        self.init(name: "[Unnamed]")
+    }
+}
+```
+
+下面是Food的初始化链
+
+![initializersExample01_2x]()
+
+这里init(name: String)是指定初始化器 因为没有父类不需要调用super
+
+```swift
+let namedMeat = Food(name: "Bacon")
+// namedMeat's name is "Bacon"
+```
+
+这里convenience init()是一个便捷初始化器，通过将"Unnamed"传给指定初始化器来初始化类
+
+```swift
+let mysteryMeat = Food()
+// mysteryMeat's name is "[Unnamed]"
+```
+
+第二个类是Food的子类RecipeIngredient
+
+```swift
+class RecipeIngredient: Food {
+    var quantity: Int
+    init(name: String, quantity: Int) {
+        self.quantity = quantity
+        super.init(name: name)
+    }
+    override convenience init(name: String) {
+        self.init(name: name, quantity: 1)
+    }
+}
+```
+引入了一个quantity标识调味品的数量
+
+下面是RecipeIngredient的初始化关系链
+
+![RecipeIngredient]()
+
+- init(name: String, quantity: Int) 是指定初始化器
+
+- init(name: String) 是一个便捷初始化器，因为与父类的指定初始化器名称和形参相同因此必须添加override修饰符。
+- RecipeIngredient 类为所有的父类指定初始化器提供了实现。因此， RecipeIngredient 类也自动继承了父类所有的便捷初始化器。
+
+因此RecipeIngredient有三种初始化器可以使用：
+
+```swift
+let oneMysteryItem = RecipeIngredient()
+let oneBacon = RecipeIngredient(name: "Bacon")
+let sixEggs = RecipeIngredient(name: "Eggs", quantity: 6)
+```
+`注意`: 这里从父类继承的convenience init()初始化器内部调用的是子类RecipeIngredient中重载的override convenience init(name: String)而非init(name: String),因此 这种方式可以初始化所有存储属性的值，其中 `quantity=1,name=[Unnamed]`。
+
+类层级中第三个也是最后一个类是 RecipeIngredient 的子类，叫做 ShoppingListItem
+
+```swift
+class ShoppingListItem: RecipeIngredient {
+    var purchased = false
+    var description: String {
+        var output = "\(quantity) x \(name)"
+        output += purchased ? " ✔" : " ✘"
+        return output
+    }
+}
+```
+ShoppingListItem 没有定义初始化器来给 purchased 一个初始值，这是因为任何添加到购物单（这里的模型）的项的初始状态总是未购买。
+
+下图展示了三个类的初始化链：
+
+![initializersExample03_2x]()
+
+你可以使用全部三个继承来的初始化器来创建 ShoppingListItem 的新实例：
+
+```swift
+var breakfastList = [
+    ShoppingListItem(),
+    ShoppingListItem(name: "Bacon"),
+    ShoppingListItem(name: "Eggs", quantity: 6),
+]
+breakfastList[0].name = "Orange juice"
+breakfastList[0].purchased = true
+for item in breakfastList {
+    print(item.description)
+}
+// 1 x Orange juice ✔
+// 1 x Bacon ✘
+// 6 x Eggs ✘
+```
+
+
+### 可失败初始化器
+
+在类、结构体或枚举中定义一个或多个可失败的初始化器。通过在 init 关键字后面添加问号`init?`来写
+
+通过在可失败初始化器写 return nil 语句，来表明可失败初始化器在何种情况下会触发初始化失败。虽然你写了 return nil 来触发初始化失败，但是你不能使用 return 关键字来表示初始化成功了。
+
+例如Int类型的这个方法
+
+```swift
+    public init?(exactly source: Float16)
+```
+
+```swift
+let wholeNumber: Double = 12345.0
+let pi = 3.14159
+ 
+if let valueMaintained = Int(exactly: wholeNumber) {
+    print("\(wholeNumber) conversion to int maintains value")
+}
+// Prints "12345.0 conversion to int maintains value"
+ 
+let valueChanged = Int(exactly: pi)
+// valueChanged is of type Int?, not Int
+ 
+if valueChanged == nil {
+    print("\(pi) conversion to int does not maintain value")
+}
+// Prints "3.14159 conversion to int does not maintain value"
+```
+
+wholeNumber可以调用成功，但是pi确失败了。
+
+例如对于我们的自定义类
+
+```swift
+struct Animal {
+    let species: String
+    init?(species: String) {
+        if species.isEmpty { return nil }
+        self.species = species
+    }
+}
+```
+我们也可以通过这种方式来添加一个可是白的初始化器。
+
+下面我们再来看看其他几种类型
+
+#### 枚举的可失败初始化器
+
+```swift
+enum TemperatureUnit {
+    case Kelvin, Celsius, Fahrenheit
+    init?(symbol: Character) {
+        switch symbol {
+        case "K":
+            self = .Kelvin
+        case "C":
+            self = .Celsius
+        case "F":
+            self = .Fahrenheit
+        default:
+            return nil
+        }
+    }
+}
+```
+
+#### 带有原始值枚举的可失败初始化器
+
+```swift
+enum TemperatureUnit: Character {
+    case Kelvin = "K", Celsius = "C", Fahrenheit = "F"
+}
+ 
+let fahrenheitUnit = TemperatureUnit(rawValue: "F")
+if fahrenheitUnit != nil {
+    print("This is a defined temperature unit, so initialization succeeded.")
+}
+// prints "This is a defined temperature unit, so initialization succeeded."
+ 
+let unknownUnit = TemperatureUnit(rawValue: "X")
+if unknownUnit == nil {
+    print("This is not a defined temperature unit, so initialization failed.")
+}
+// prints "This is not a defined temperature unit, so initialization failed."
+````
+
+#### 初始化失败的传递
+
+```swift
+class Product {
+    let name: String
+    init?(name: String) {
+        if name.isEmpty { return nil }
+        self.name = name
+    }
+}
+ 
+class CartItem: Product {
+    let quantity: Int
+    init?(name: String, quantity: Int) {
+        if quantity < 1 { return nil }
+        self.quantity = quantity
+        super.init(name: name)
+    }
+}
+```
+
+#### 重写可失败初始化器
+
+可以在子类里重写父类的可失败初始化器。。或者，你可以用子类的非可失败初始化器来重写父类可失败初始化器。这样允许你定义一个初始化不会失败的子类，尽管父类的初始化允许失败。
+
+```swift
+class Document {
+    var name: String?
+    // this initializer creates a document with a nil name value
+    init() {}
+    // this initializer creates a document with a non-empty name value
+    init?(name: String) {
+        self.name = name
+        if name.isEmpty { return nil }
+    }
+}
+```
+
+他有一个子类AutomaticallyNamedDocument
+
+```swift
+class AutomaticallyNamedDocument: Document {
+    override init() {
+        super.init()
+        self.name = "[Untitled]"
+    }
+    override init(name: String) {
+        super.init()
+        if name.isEmpty {
+            self.name = "[Untitled]"
+        } else {
+            self.name = name
+        }
+    }
+}
+```
+
+`重点`: 你可以用一个非可失败初始化器重写一个可失败初始化器，但反过来是不行的。
+
+你可以在初始化器里`使用强解包`来从父类调用一个`可失败初始化器`作为`子类``非可失败初始化器`的一部分。
+
+例如，下边的 UntitledDocument 子类将总是被命名为 "[Untitled]" ，并且在初始化期间它使用了父类的可失败 init(name:) 初始化器：
+
+```swift
+class UntitledDocument: Document {
+    override init() {
+        super.init(name: "[Untitled]")!
+    }
+}
+```
+
+### 必要初始化器
+
+在类的初始化器前添加 required  修饰符来表明所有该类的子类都必须实现该初始化器：
+
+```swift
+class SomeClass {
+    required init() {
+        // initializer implementation goes here
+    }
+}
+```
+当子类重写父类的必要初始化器时，必须在子类的初始化器前同样添加 required 修饰符以确保当其它类继承该子类时，该初始化器同为必要初始化器。在重写父类的必要初始化器时，不需要添加 override 修饰符：
+
+```
+class SomeSubclass: SomeClass {
+    required init() {
+        // subclass implementation of the required initializer goes here
+    }
+}
+```
+
+### 通过闭包和函数来设置属性的默认值
+
+```swift
+class SomeClass {
+    let someProperty: SomeType = {
+        // create a default value for someProperty inside this closure
+        // someValue must be of the same type as SomeType
+        return someValue
+    }()
+}
+```
+注意闭包花括号的结尾跟一个没有参数的圆括号。这是告诉 Swift 立即执行闭包。如果你忽略了这对圆括号，你就会把闭包作为值赋给了属性，并且不会返回闭包的值。
+
+`重点`: 如果你使用了闭包来初始化属性，请记住闭包执行的时候，实例的其他部分还没有被初始化。这就意味着你不能在闭包里读取任何其他的属性值，即使这些属性有默认值。你也不能使用隐式 self 属性，或者调用实例的方法。
+
+
+### 参考文献
+
+[初始化](https://www.cnswift.org/initialization/#spl-18)
 
