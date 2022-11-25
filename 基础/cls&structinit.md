@@ -257,7 +257,7 @@ class Food {
 
 下面是Food的初始化链
 
-![initializersExample01_2x]()
+![initializersExample01_2x](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/initializersExample01_2x.png)
 
 这里init(name: String)是指定初始化器 因为没有父类不需要调用super
 
@@ -291,7 +291,7 @@ class RecipeIngredient: Food {
 
 下面是RecipeIngredient的初始化关系链
 
-![RecipeIngredient]()
+![RecipeIngredient](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/initializersExample02_2x.png)
 
 - init(name: String, quantity: Int) 是指定初始化器
 
@@ -323,7 +323,7 @@ ShoppingListItem 没有定义初始化器来给 purchased 一个初始值，这�
 
 下图展示了三个类的初始化链：
 
-![initializersExample03_2x]()
+![initializersExample03_2x](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/initializersExample03_2x.png)
 
 你可以使用全部三个继承来的初始化器来创建 ShoppingListItem 的新实例：
 
