@@ -52,7 +52,7 @@ class TheOneAndOnlyKraken {
 * 1、唯一性
 我们通过断点发现，定义的全局private let 是懒加载的，第一次使用的时候才会被调用，同时
 
-![shareinstance_once]()
+![shareinstance_once](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/shareinstance_once.png)
 
 实际上全局的常量也是通过dispatch_once来实现的所以可以保证智慧调用一次
 
@@ -77,7 +77,7 @@ class TheOneAndOnlyKraken {
 
 我们还是通过断点的方式
 
-![shareInstance_perfect]()
+![shareInstance_perfect](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/shareinstance_perfect.png)
 
 定义在类内部的let也是通过dispatch_once来保证唯一性的，因此这个条件是肯定满足的
 
@@ -86,7 +86,7 @@ class TheOneAndOnlyKraken {
 
 我们看到了在类中的init方法被定义为私有，因此当我们想在外部初始化这个类时：
 
-![TheOneAndOnlyKraken]()
+![TheOneAndOnlyKraken](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/initializerPrivate.png)
 
 编译器提示我们`'TheOneAndOnlyKraken' initializer is inaccessible due to 'private' protection level`,因此我们无法在外部新建该类型的实例
 
