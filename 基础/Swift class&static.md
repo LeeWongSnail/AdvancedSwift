@@ -54,7 +54,7 @@ class ClassDemo {
 
 ### class不可以修饰类的存储属性，static可以修饰类的存储属性
 
-![classstoreproperty]()
+![classstoreproperty](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/classstoreproperty.png)
 
 这时候编译器会提示`Class stored properties not supported in classes; did you mean 'static'?`
 
@@ -72,7 +72,7 @@ protocol PersonProtocol {
     class var name: String {get}
 }
 ```
-![classmethodinprotocol]()
+![classmethodinprotocol](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/classmethodinprotocol.png)
 
 显然class是不行的。
 
@@ -115,7 +115,7 @@ class 是 `dynamically dispatched`，也就是在 `runtime` 才被指派，`comp
 
 使用static修饰会直接报错:
 
-![overridestaticmethod]()
+![overridestaticmethod](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/overridestaticmethod.png)
 
 但是使用class就没有问题
 
@@ -139,7 +139,7 @@ class Son: Father {
 
 `class`和`static`能够修饰的范围不一样,`class`只能在`class`中修饰,而`static`可以不仅可以作用于`class`中,也可以在`enum`,和`struct`中使用.
 
-![classInstruct]()
+![classInstruct](https://github.com/LeeWongSnail/AdvancedSwift/raw/main/res/classInstruct.png)
     
 
 ## 参考
